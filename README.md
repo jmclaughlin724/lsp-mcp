@@ -23,7 +23,7 @@ Use the **unified lsp-mcp server** that provides both Python and TypeScript supp
   "mcpServers": {
     "lsp-mcp": {
       "command": "npx",
-      "args": ["@treedy/lsp-mcp@latest"]
+      "args": ["@jmclaughlin724/lsp-mcp@latest"]
     }
   }
 }

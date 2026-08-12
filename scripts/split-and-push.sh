@@ -2,7 +2,7 @@
 set -e
 
 # Configuration
-ORG="Treedy2020"
+ORG="jmclaughlin724"
 
 # Colors
 GREEN='\033[0;32m'

@@ -1,4 +1,4 @@
-# @treedy/lsp-mcp
+# @jmclaughlin724/lsp-mcp
 
 One MCP server for Python, TypeScript/JavaScript, and Vue code intelligence.
 
@@ -16,7 +16,7 @@ Backends are resolved on-demand via `npx` / `uvx`.
   "mcpServers": {
     "lsp-mcp": {
       "command": "npx",
-      "args": ["@treedy/lsp-mcp@latest"]
+      "args": ["@jmclaughlin724/lsp-mcp@latest"]
     }
   }
 }

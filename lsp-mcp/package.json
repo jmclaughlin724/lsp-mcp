@@ -1,6 +1,10 @@
 {
-  "name": "@treedy/lsp-mcp",
+  "name": "@jmclaughlin724/lsp-mcp",
   "version": "0.2.6",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jmclaughlin724/lsp-mcp.git"
+  },
   "description": "Unified MCP server aggregating multi-language LSP backends for code intelligence",
   "type": "module",
   "main": "dist/index.js",
