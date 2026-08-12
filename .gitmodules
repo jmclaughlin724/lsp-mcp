@@ -2,11 +2,22 @@
 	path = backends/typescript/typescript-lsp-mcp
 	url = https://github.com/Treedy2020/typescript-lsp-mcp.git
 	branch = master
+	ignore = untracked
 [submodule "backends/vue/vue-lsp-mcp"]
 	path = backends/vue/vue-lsp-mcp
 	url = https://github.com/Treedy2020/vue-lsp-mcp.git
 	branch = master
+	ignore = untracked
 [submodule "backends/python/python-lsp-mcp"]
 	path = backends/python/python-lsp-mcp
 	url = https://github.com/Treedy2020/lsp-mcp-python.git
 	branch = master
+[submodule "benchmarks/fastapi"]
+	path = benchmarks/fastapi
+	url = https://github.com/fastapi/fastapi.git
+[submodule "benchmarks/vitesse"]
+	path = benchmarks/vitesse
+	url = https://github.com/antfu-collective/vitesse.git
+[submodule "benchmarks/zod"]
+	path = benchmarks/zod
+	url = https://github.com/colinhacks/zod.git

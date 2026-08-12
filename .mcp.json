@@ -1,10 +1,13 @@
 {
   "mcpServers": {
     "lsp-mcp-local": {
-      "command": "npx",
+      "command": "bun",
       "args": [
-        "@treedy/lsp-mcp@latest"
-      ]
+        "lsp-mcp/dist/index.js"
+      ],
+      "env": {
+        "LSP_MCP_BACKEND_RUNTIME_MODE": "bundled"
+      }
     }
   }
 }

@@ -40,5 +40,7 @@ htmlcov/
 
 # Logs
 *.log
-\n# Benchmarks\nbenchmarks/
-\n.codex/\n.gemini/
+
+# Agent scratch configs (tracked files stay tracked)
+.codex/
+.gemini/
