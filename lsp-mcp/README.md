@@ -11,12 +11,15 @@ Backends are resolved on-demand via `npx` / `uvx`.
 
 1) Add to your MCP client config:
 
+Build once (`cd lsp-mcp && bun install && bun run build:bundled`), then register the bundled build:
+
 ```json
 {
   "mcpServers": {
     "lsp-mcp": {
-      "command": "npx",
-      "args": ["@jmclaughlin724/lsp-mcp@latest"]
+      "command": "bun",
+      "args": ["/path/to/lsp-mcp/lsp-mcp/dist/index.js"],
+      "env": { "LSP_MCP_BACKEND_RUNTIME_MODE": "bundled" }
     }
   }
 }

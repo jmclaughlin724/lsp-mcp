@@ -18,12 +18,15 @@ Unlike IDE plugins where millisecond latency matters, MCP servers optimize for *
 
 Use the **unified lsp-mcp server** that provides both Python and TypeScript support:
 
+Build once (`cd lsp-mcp && bun install && bun run build:bundled`), then register the bundled build:
+
 ```json
 {
   "mcpServers": {
     "lsp-mcp": {
-      "command": "npx",
-      "args": ["@jmclaughlin724/lsp-mcp@latest"]
+      "command": "bun",
+      "args": ["/path/to/lsp-mcp/lsp-mcp/dist/index.js"],
+      "env": { "LSP_MCP_BACKEND_RUNTIME_MODE": "bundled" }
     }
   }
 }
