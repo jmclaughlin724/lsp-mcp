@@ -54,32 +54,21 @@ function resolveBackendRuntimeMode(): "registry" | "bundled" | "auto" {
 }
 
 export function getBackendPackages(config: Config): BackendPackageInfo[] {
-  const pythonProvider = config.python?.provider || "python-lsp-mcp";
   const pythonPackage: Omit<BackendPackageInfo, "language" | "provider" | "default_channel" | "auto_update_enabled"> =
-    pythonProvider === "pyright-mcp"
-      ? {
-          package: "@treedy/pyright-mcp",
-          package_ref: "@treedy/pyright-mcp@latest",
-          registry: "npm",
-          resolver: "npx",
-          install_command: "npx --yes @treedy/pyright-mcp@latest",
-          update_command: "npx --yes @treedy/pyright-mcp@latest",
-          minimum_supported_version: "0.1.0",
-        }
-      : {
-          package: "python-lsp-mcp",
-          package_ref: "python-lsp-mcp@latest",
-          registry: "pypi",
-          resolver: "uvx",
-          install_command: "uvx --quiet --upgrade python-lsp-mcp",
-          update_command: "uvx --quiet --upgrade python-lsp-mcp",
-          minimum_supported_version: "1.20.0",
-        };
+    {
+      package: "python-lsp-mcp",
+      package_ref: "python-lsp-mcp@latest",
+      registry: "pypi",
+      resolver: "uvx",
+      install_command: "uvx --quiet --upgrade python-lsp-mcp",
+      update_command: "uvx --quiet --upgrade python-lsp-mcp",
+      minimum_supported_version: "1.20.0",
+    };
 
   return [
     {
       language: "python",
-      provider: pythonProvider,
+      provider: config.python?.provider || "python-lsp-mcp",
       ...pythonPackage,
       default_channel: "latest",
       auto_update_enabled: config.autoUpdate,
@@ -165,7 +154,7 @@ export async function status(
     usage: {
       list: "Use list_backends to see available backends",
       start: "Use start_backend to install and start a backend",
-      tools: "Once started, tools are available as python_hover, typescript_definition, etc.",
+      tools: "Once started, unified tools (hover, definition, etc.) route automatically by file extension.",
     },
   };
 
@@ -216,11 +205,6 @@ export async function checkVersions(
             command: "uvx --upgrade python-lsp-mcp",
             description: "Rope-based backend (default)",
           },
-          "pyright-mcp": {
-            registry: "npm",
-            command: "npx --yes @treedy/pyright-mcp@latest",
-            description: "Pyright-based backend",
-          },
         },
         typescript: {
           "typescript-lsp-mcp": {
@@ -252,7 +236,7 @@ export async function checkVersions(
  */
 export const switchPythonBackendSchema = {
   provider: z
-    .enum(["python-lsp-mcp", "pyright-mcp"])
+    .enum(["python-lsp-mcp"])
     .describe("The Python backend provider to use"),
 };
 
@@ -332,7 +316,7 @@ export async function listBackends(
     backend_packages: backendPackages,
     usage: {
       start: "Call start_backend with language='python', 'typescript', or 'vue' to install and start a backend",
-      tools: "Once started, backend tools will be available as {language}_{tool} (e.g., python_hover, vue_hover)",
+      tools: "Once started, backend tools are reachable through the unified tools (hover, definition, etc.) routed by file extension",
     },
   };
 

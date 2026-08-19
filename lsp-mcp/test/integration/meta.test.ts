@@ -87,13 +87,15 @@ describe("Meta Tools", () => {
     expect(result.workspaces.resolved.typescript).toBeNull();
   });
 
-  it("should expose legacy namespaced unified aliases", async () => {
+  it("should expose unified tools without legacy namespaced aliases", async () => {
     const result = await client.request("tools/list", {});
     const names = (result.tools || []).map((t: { name: string }) => t.name);
 
-    expect(names).toContain("python_hover");
-    expect(names).toContain("typescript_definition");
+    expect(names).toContain("hover");
+    expect(names).toContain("definition");
     expect(names).toContain("expand_result");
+    expect(names).not.toContain("python_hover");
+    expect(names).not.toContain("typescript_definition");
   });
 
   it("should provide doctor diagnostics", async () => {

@@ -114,15 +114,11 @@ async function build() {
     await buildBackend("typescript", "typescript/typescript-lsp-mcp");
     await copyBackend("typescript", "typescript/typescript-lsp-mcp");
 
-    // 2. Pyright Backend (TS implementation)
-    await buildBackend("pyright", "python/pyright-mcp");
-    await copyBackend("pyright", "python/pyright-mcp");
-
-    // 3. Python Backend (Rope/Python implementation)
+    // 2. Python Backend (Rope/Python implementation)
     // No build step needed for Python, just copy
     await copyBackend("python", "python/python-lsp-mcp");
 
-    // 4. Vue Backend
+    // 3. Vue Backend
     await buildBackend("vue", "vue/vue-lsp-mcp");
     await copyBackend("vue", "vue/vue-lsp-mcp");
   } else {

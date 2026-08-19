@@ -33,7 +33,7 @@ Build once (`cd lsp-mcp && bun install && bun run build:bundled`), then register
 ```
 
 This single server provides:
-- **Namespaced tools**: `python_hover`, `typescript_definition`, etc.
+- **Unified tools**: `hover`, `definition`, etc., routed automatically by file extension
 - **Auto language detection**: Infers language from file extensions
 - **Auto-update**: Backends updated to latest versions on startup
 - **Lazy loading**: Backends start only when first used
@@ -86,14 +86,6 @@ This single server provides:
 │   │   │   ├── tests/
 │   │   │   └── pyproject.toml
 │   │   │
-│   │   ├── pyright-mcp/              # 🐍 Python backend (Pyright only, TypeScript impl)
-│   │   │   ├── src/
-│   │   │   │   ├── index.ts          # MCP server
-│   │   │   │   ├── lsp-client.ts     # Pyright LSP client
-│   │   │   │   ├── lsp/              # LSP utilities
-│   │   │   │   └── tools/            # Tool implementations
-│   │   │   └── package.json
-│   │   │
 │   │   └── fixtures/                 # Python test files
 │   │
 │   └── typescript_
@@ -141,21 +133,6 @@ Supports two analysis backends:
 - **rope** (default) - Fast, Python-native, supports refactoring
 - **pyright** - Full type checking, better cross-file analysis
 
-### Python (pyright-mcp)
-
-```json
-{
-  "mcpServers": {
-    "pyright-mcp": {
-      "command": "npx",
-      "args": ["@treedy/pyright-mcp@latest"]
-    }
-  }
-}
-```
-
-TypeScript implementation using Pyright LSP directly.
-
 ### TypeScript (typescript-lsp-mcp)
 
 ```json
@@ -195,7 +172,7 @@ The [skills/](./skills/) folder contains guidance for AI agents:
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `LSP_MCP_PYTHON_ENABLED` | `true` | Enable Python backend |
-| `LSP_MCP_PYTHON_PROVIDER` | `python-lsp-mcp` | Python provider (`python-lsp-mcp` or `pyright-mcp`) |
+| `LSP_MCP_PYTHON_PROVIDER` | `python-lsp-mcp` | Python provider (only `python-lsp-mcp` supported) |
 | `LSP_MCP_TYPESCRIPT_ENABLED` | `true` | Enable TypeScript backend |
 | `LSP_MCP_AUTO_UPDATE` | `true` | Auto-update backends on startup |
 
@@ -213,8 +190,8 @@ The [skills/](./skills/) folder contains guidance for AI agents:
 │                                                                  │
 │  ┌────────────────────────────────────────────────────────────┐ │
 │  │                    Tool Router                              │ │
-│  │  python_hover → Python backend                             │ │
-│  │  typescript_definition → TypeScript backend                │ │
+│  │  hover (*.py) → Python backend                             │ │
+│  │  definition (*.ts) → TypeScript backend                   │ │
 │  └────────────────────────────────────────────────────────────┘ │
 │         │                                      │                 │
 │         ▼                                      ▼                 │

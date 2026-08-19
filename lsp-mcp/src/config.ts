@@ -385,64 +385,40 @@ export function getBackendCommand(
   const { autoUpdate } = config;
 
   if (language === "python") {
-    // Legacy logic for Python provider switching
     const provider = config.python?.provider || "python-lsp-mcp";
+    if (provider !== "python-lsp-mcp") {
+      console.error(
+        `[Config] Unknown python provider "${provider}"; the pyright-mcp backend was removed. Using python-lsp-mcp.`
+      );
+    }
 
-    if (provider === "pyright-mcp") {
-      // Bundled runtime is opt-in (bundled/auto modes).
-      const bundledPath = runtimeMode !== "registry" ? resolveBundledBackend("pyright") : null;
-      if (bundledPath && runtimeMode !== "registry") {
-        console.error(`[Config] Using bundled pyright backend from ${bundledPath}`);
-        return {
-          enabled: true,
-          command: "node",
-          args: [path.join(bundledPath, "dist", "index.js")],
-        };
-      }
-      if (runtimeMode === "bundled") {
-        throw new Error(
-          "Bundled pyright backend not found. Run `bun run build:bundled` in lsp-mcp to produce dist/bundled/pyright."
-        );
-      }
-
+    // Bundled runtime is opt-in (bundled/auto modes).
+    const bundledPath = runtimeMode !== "registry" ? resolveBundledBackend("python") : null;
+    if (bundledPath && runtimeMode !== "registry") {
+      console.error(`[Config] Using bundled python backend from ${bundledPath}`);
       return {
         enabled: true,
-        command: "npx",
-        args: autoUpdate
-          ? ["--yes", "@treedy/pyright-mcp@latest"]
-          : ["@treedy/pyright-mcp@latest"],
-      };
-    } else {
-      // python-lsp-mcp
-
-      // Bundled runtime is opt-in (bundled/auto modes).
-      const bundledPath = runtimeMode !== "registry" ? resolveBundledBackend("python") : null;
-      if (bundledPath && runtimeMode !== "registry") {
-        console.error(`[Config] Using bundled python backend from ${bundledPath}`);
-        return {
-          enabled: true,
-          command: "uv",
-          args: ["run", "--quiet", "--directory", bundledPath, "python-lsp-mcp"],
-          env: {
-            UV_CACHE_DIR: process.env.UV_CACHE_DIR || path.join(os.tmpdir(), "lsp-mcp-uv-cache"),
-          },
-        };
-      }
-      if (runtimeMode === "bundled") {
-        throw new Error(
-          "Bundled python backend not found. Run `bun run build:bundled` in lsp-mcp to produce dist/bundled/python."
-        );
-      }
-
-      // python-lsp-mcp via uvx
-      return {
-        enabled: true,
-        command: "uvx",
-        args: autoUpdate
-          ? ["--quiet", "--upgrade", "python-lsp-mcp"]
-          : ["--quiet", "python-lsp-mcp"],
+        command: "uv",
+        args: ["run", "--quiet", "--directory", bundledPath, "python-lsp-mcp"],
+        env: {
+          UV_CACHE_DIR: process.env.UV_CACHE_DIR || path.join(os.tmpdir(), "lsp-mcp-uv-cache"),
+        },
       };
     }
+    if (runtimeMode === "bundled") {
+      throw new Error(
+        "Bundled python backend not found. Run `bun run build:bundled` in lsp-mcp to produce dist/bundled/python."
+      );
+    }
+
+    // python-lsp-mcp via uvx
+    return {
+      enabled: true,
+      command: "uvx",
+      args: autoUpdate
+        ? ["--quiet", "--upgrade", "python-lsp-mcp"]
+        : ["--quiet", "python-lsp-mcp"],
+    };
   } else if (language === "typescript") {
     // Bundled runtime is opt-in (bundled/auto modes).
     const bundledPath = runtimeMode !== "registry" ? resolveBundledBackend("typescript") : null;

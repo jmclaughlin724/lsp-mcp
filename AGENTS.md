@@ -4,7 +4,6 @@
 This repo hosts a unified MCP server plus language-specific backends.
 - `lsp-mcp/`: Unified TypeScript server (Bun, ESM) and meta tools.
 - `backends/python/python-lsp-mcp/`: Python server (Rope + Pyright) with `src/rope_mcp/` and `tests/`.
-- `backends/python/pyright-mcp/`: TypeScript implementation of Pyright MCP.
 - `backends/typescript/typescript-lsp-mcp/`: TypeScript/JavaScript backend.
 - `backends/vue/`: Vue-specific backend and vendored language tools.
 - `docs/` and `skills/`: Documentation and agent guidance.
@@ -18,9 +17,6 @@ This repo hosts a unified MCP server plus language-specific backends.
 - Python backend:
   - Tests: `cd backends/python/python-lsp-mcp && uv run pytest tests/ -v`
   - Run locally: `cd backends/python/python-lsp-mcp && uv run python-lsp-mcp`
-- Pyright MCP (TS):
-  - Build: `cd backends/python/pyright-mcp && bun run build`
-  - Tests: `cd backends/python/pyright-mcp && bun run test:mcp`
 - TypeScript MCP:
   - Build: `cd backends/typescript/typescript-lsp-mcp && bun run build`
   - Tests: `cd backends/typescript/typescript-lsp-mcp && bun run test`

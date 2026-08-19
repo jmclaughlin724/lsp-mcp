@@ -2,12 +2,12 @@
  * Unified LSP MCP Server
  *
  * Aggregates multiple language-specific LSP backends into a single MCP server.
- * Supports Python (via python-lsp-mcp or pyright-mcp) and TypeScript backends.
+ * Supports Python (via python-lsp-mcp) and TypeScript backends.
  *
  * Tools are dynamically loaded from backends on-demand:
  * - Use list_backends to see available backends
  * - Use start_backend to install and start a backend
- * - Once started, tools are available as python_hover, typescript_definition, etc.
+ * - Once started, unified tools (hover, definition, etc.) route automatically by file extension
  *
  * Backends are lazy-loaded - they're only installed and started when you call start_backend.
  */
@@ -4524,37 +4524,6 @@ const LANGUAGE_SPECIFIC_TOOLS: Record<Language, Array<{
   vue: [],
 };
 
-/**
- * Backward-compatible namespaced aliases for unified tools.
- * Example: python_hover -> hover
- */
-const LEGACY_NAMESPACED_UNIFIED_TOOL_NAMES = new Set([
-  "hover",
-  "definition",
-  "implementation",
-  "type_definition",
-  "call_hierarchy",
-  "type_hierarchy",
-  "document_highlight",
-  "code_lens",
-  "selection_range",
-  "folding_range",
-  "document_link",
-  "linked_editing_range",
-  "semantic_tokens",
-  "moniker",
-  "inlay_hint_resolve",
-  "references",
-  "completions",
-  "diagnostics",
-  "symbols",
-  "rename",
-  "prepare_rename",
-  "search",
-  "signature_help",
-  "update_document",
-]);
-
 // ============================================================================ 
 // Global Workspace Tool
 // ============================================================================ 
@@ -6139,87 +6108,6 @@ function preRegisterTools(): void {
       }
     );
     registeredTools.add(tool.name);
-  }
-
-  // 1.5 Register legacy namespaced aliases for common unified tools
-  for (const [language, langConfig] of Object.entries(config.languages)) {
-    if (!langConfig?.enabled) continue;
-
-    for (const tool of UNIFIED_TOOLS) {
-      if (!LEGACY_NAMESPACED_UNIFIED_TOOL_NAMES.has(tool.name)) continue;
-
-      const aliasName = `${language}_${tool.name}`;
-      if (registeredTools.has(aliasName)) continue;
-
-      server.registerTool(
-        aliasName,
-        {
-          description: `${tool.description} (legacy alias; prefer '${tool.name}')`,
-          inputSchema: tool.schema,
-        },
-        async (args) => {
-          const languageName = language as Language;
-          const languageWorkspace = getWorkspaceForLanguage(languageName);
-          if (isSemanticTool(tool.name) && !languageWorkspace) {
-            return semanticWorkspaceRequiredResponse(languageName, tool.name);
-          }
-          const resolvedWorkspace = isSemanticTool(tool.name) ? languageWorkspace : (languageWorkspace || activeWorkspacePath);
-          const lockWorkspace = resolvedWorkspace || (args.file as string) || (args.path as string) || null;
-          const singletonLock = await ensureBackendSingleton(language, lockWorkspace);
-          if (!singletonLock.ok) {
-            return withSemanticContext(singletonLock.response, tool.name, resolvedWorkspace, null, languageName);
-          }
-          const proxyHost = singletonLock.proxyHost;
-          const proxyPort = singletonLock.proxyPort;
-          const hasProxy = !!proxyHost && !!proxyPort;
-          const backendInstanceId = hasProxy
-            ? `proxy:${languageName}@${proxyHost}:${proxyPort}`
-            : (backendManager.getBackendIdentity(languageName)?.instanceId ?? null);
-
-          if (!hasProxy && !startedBackends.has(language)) {
-            await backendManager.getBackend(language);
-            startedBackends.add(language);
-
-            if (resolvedWorkspace) {
-              console.error(`[lsp-mcp] Syncing active workspace to ${language}: ${resolvedWorkspace}`);
-              try {
-                await backendManager.callTool(language, "switch_workspace", { path: resolvedWorkspace });
-              } catch (syncError) {
-                console.error(`[lsp-mcp] Failed to sync workspace to ${language}:`, syncError);
-              }
-            }
-          }
-
-          const backendArgs = { ...args } as Record<string, unknown>;
-          if (tool.name === "rename") {
-            if (language === "python") {
-              backendArgs.new_name = args.newName || args.new_name;
-            } else {
-              backendArgs.newName = args.newName || args.new_name;
-            }
-          }
-
-          if (proxyHost && proxyPort) {
-            return withSemanticContext(
-              await callRemoteBackendTool(proxyHost, proxyPort, language, tool.name, backendArgs, resolvedWorkspace || lockWorkspace),
-              tool.name,
-              resolvedWorkspace,
-              backendInstanceId,
-              languageName
-            );
-          }
-          return withSemanticContext(
-            await backendManager.callTool(languageName, tool.name, backendArgs),
-            tool.name,
-            resolvedWorkspace,
-            backendInstanceId,
-            languageName
-          );
-        }
-      );
-
-      registeredTools.add(aliasName);
-    }
   }
 
   // 2. Register Language-Specific Tools

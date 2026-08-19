@@ -63,9 +63,6 @@ Use these directly; language is inferred from file/path:
 - Analysis: `diagnostics`, `git_diagnostics`, `symbols`, `search`, `summarize_file`, `read_file_with_hints`, `project_structure`
 - Sync/edit loop: `update_document`
 
-Compatibility aliases are also available for older clients, for example:
-`python_hover`, `typescript_definition`, `python_diagnostics`.
-
 ### High-volume output controls
 
 For large repos, use preview arguments to reduce token usage:
@@ -223,7 +220,7 @@ You can configure with env vars or `.lsp-mcp.json` in your workspace.
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `LSP_MCP_PYTHON_ENABLED` | `true` | Enable Python backend |
-| `LSP_MCP_PYTHON_PROVIDER` | `python-lsp-mcp` | Python provider (`python-lsp-mcp` or `pyright-mcp`) |
+| `LSP_MCP_PYTHON_PROVIDER` | `python-lsp-mcp` | Python provider (only `python-lsp-mcp` supported) |
 | `LSP_MCP_TYPESCRIPT_ENABLED` | `true` | Enable TypeScript backend |
 | `LSP_MCP_VUE_ENABLED` | `true` | Enable Vue backend |
 | `LSP_MCP_AUTO_UPDATE` | `true` | Update backend packages to latest on startup/update |
@@ -237,7 +234,6 @@ You can configure with env vars or `.lsp-mcp.json` in your workspace.
 When `LSP_MCP_AUTO_UPDATE=true`:
 
 - `python-lsp-mcp` via `uvx --upgrade python-lsp-mcp`
-- `pyright-mcp` via `npx --yes @treedy/pyright-mcp@latest`
 - `typescript-lsp-mcp` via `npx --yes @treedy/typescript-lsp-mcp@latest`
 - `vue-lsp-mcp` via `npx --yes @treedy/vue-lsp-mcp@latest`
 

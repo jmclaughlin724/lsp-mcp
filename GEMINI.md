@@ -6,7 +6,6 @@ This repository contains a **Unified Model Context Protocol (MCP) Server** (`lsp
 The project is a **monorepo** consisting of:
 *   **`lsp-mcp`**: The main entry point. A unified server that routes requests to the appropriate language-specific backend.
 *   **`backends/python/python-lsp-mcp`**: Python backend utilizing `Rope` (refactoring) and `Pyright` (type checking).
-*   **`backends/python/pyright-mcp`**: Alternative Python backend (TypeScript implementation wrapping Pyright CLI).
 *   **`backends/typescript/typescript-lsp-mcp`**: TypeScript/JavaScript backend using the official TypeScript Language Service.
 *   **`backends/vue/vue-lsp-mcp`**: Vue backend using the Vue Language Server.
 
